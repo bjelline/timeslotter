@@ -17,7 +17,7 @@ export default function Home() {
         </h1>
 
         <p className={styles.description}>
-          Let's set up your schedule!
+          Let&apos;s set up your schedule!
         </p>
 
         <div className={styles.grid}>
