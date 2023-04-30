@@ -1,8 +1,33 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
+import { supabase } from './../lib/supabaseClient';
+import FormattedRange from '../components/FormattedRange';
+import ScheduleCards from '../components/ScheduleCards';
+import React, { useState, useEffect } from 'react';
 
-export default function Home() {
+
+async function insertSchedule() {
+  let { data, error } = await supabase.from('schedules').insert([
+    { title: 'a new Schedule', description: 'of things', start: '2021-05-01 20:30:00', end: '2021-05-31 22:00:00' },
+  ]);
+  console.log("insert error=", error, "data=", data);
+}
+
+export async function getServerSideProps() {
+  let { data, error } = await supabase.from('schedules').select('id, title, description, start, end').order('start', { ascending: true });
+  if( error ) {
+    data = [];
+  }
+  return {
+    props: { schedules: data }
+  }
+}
+
+
+export default function Home({schedules}) {
+
+
   return (
     <div className={styles.container}>
       <Head>
@@ -20,26 +45,7 @@ export default function Home() {
           Let&apos;s set up your schedule!
         </p>
 
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h2>Project Presentations</h2>
-            <p>something</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h2>exams</h2>
-            <p>about somethings</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h2>create a new schedule</h2>
-            <p>about something</p>
-          </a>
-
-        </div>
+        <ScheduleCards schedules={schedules}  />
       </main>
 
       <footer className={styles.footer}>
