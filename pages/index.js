@@ -26,8 +26,6 @@ export async function getServerSideProps() {
 
 
 export default function Home({schedules}) {
-
-
   return (
     <div className={styles.container}>
       <Head>

@@ -1,16 +1,12 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 
-export default function handler(req, res) {
-  res.status(200).json({ name: 'John Doe' })
-}
-
-
-import { adminRewriteScheduleStartNow } from "../lib/supabaseClient.js";
+import { adminRewriteScheduleStartNow } from "../../../../lib/supabaseClient.js";
 
 export default async function handler(req, res) {
+  console.log("api/schedule/start-now-[id].js", req.method, req.query, req.body);
+  const { id } = req.query;
   if (req.method === 'POST') {
     // Call the adminRewriteScheduleStartNow function here
-    await adminRewriteScheduleStartNow();
+    await adminRewriteScheduleStartNow(id);
 
     // Send a success response
     res.status(200).json({ message: 'Schedule started successfully' });

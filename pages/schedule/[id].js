@@ -2,28 +2,26 @@ import Head from 'next/head';
 import styles from '../../styles/Home.module.css';
 import { useRouter } from 'next/router';
 import FormattedRange from '../../components/FormattedRange';
-import FormattedTime from '../../components/FormattedTime';
-import { isToday, isPast, isFuture } from 'date-fns'
+import EventStatus from '../../components/EventStatus';
+import EventList from '../../components/EventList';
+import ResetButton from '../../components/ResetButton';
 import { supabase } from '../../lib/supabaseClient';
-
-
 
 export async function getServerSideProps(context) {
   const { id } = context.query;
-  console.log("serverside in ShowSchedule: try to load id", id);
+  // console.log("serverside in ShowSchedule: try to load id", id);
 
   let { data: schedule, error: schedulesError } = await supabase
     .from('schedules')
     .select('id, title, description, start, end')
     .eq('id', id)
-    .order('start', { ascending: true })
     .single();
   if (schedulesError) {
     schedule = {};
   }
-  console.log("serverside in ShowSchedule: schedule=", schedule);
+  // console.log("serverside in ShowSchedule: schedule=", schedule);
 
-  let{ data: items, error: itemsError } = await supabase
+  let { data: items, error: itemsError } = await supabase
     .from('items')
     .select('*')
     .eq('schedule_id', id)
@@ -31,7 +29,7 @@ export async function getServerSideProps(context) {
   if (itemsError) {
     items = [];
   }
-  console.log("serverside in ShowSchedule: items=", items);
+  // console.log("serverside in ShowSchedule: items=", items);
 
 
   return {
@@ -39,11 +37,18 @@ export async function getServerSideProps(context) {
   }
 }
 
+// realtime
+
+// supabase
+//   .channel('any')
+//   .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'items' }, handleItemInserted)
+//   .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'items' }, handleItemUpdated)
+//   .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'schemas' }, handleSchemaUpdated)
+//   .subscribe()
+
 export default function ShowSchedule({ schedule, items }) {
   const router = useRouter();
-  console.log("ShowSchedule", router.query)
   const { id } = router.query;
-  console.log("id", id);
 
   return (
     <div className={styles.container}>
@@ -54,16 +59,20 @@ export default function ShowSchedule({ schedule, items }) {
       </Head>
 
       <main className={styles.main}>
+        <ResetButton scheduleId={id} />
+        <p><FormattedRange start={schedule.start} end={schedule.end} /></p>
         <h1 className={styles.title}>
           {schedule.title}
         </h1>
-        <p>{schedule.descriptin}</p>
-        <p><FormattedRange start={schedule.start} end={schedule.end} /></p>
-        <ol className="item_list">
-          {items.map((item) => (
-            <li key={item.id}><FormattedTime time={item.planned_start_at} /> {item.name}</li>
-          ))}
-        </ol>
+        <p>{schedule.description}</p>
+        {items.length == 0 ? (
+          <p>Noch Keine Punkte auf der Tagesordnung.</p>
+        ) : (
+          <>
+            <EventStatus item={items[0]} />
+            <EventList items={items} />
+          </>
+        )}
       </main>
     </div>
   )

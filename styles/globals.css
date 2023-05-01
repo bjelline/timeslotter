@@ -1,9 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
   --past-bg-color: #00C9FF;
   --future-bg-color: #92FE9D;
   --today-bg-color: #FF6FD8;
 }
-
 
 
 html,
@@ -14,6 +17,16 @@ body {
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 
     background: linear-gradient(90deg, var(--past-bg-color) 0%, var(--future-bg-color) 100%);
+}
+
+
+@layer base {
+  h1 {
+    @apply text-4xl;
+  }
+  h2 {
+    @apply text-2xl;
+  }
 }
 
 a {
@@ -36,10 +49,11 @@ a {
     Bitstream Vera Sans Mono, Courier New, monospace;
 }
 
-.time {
-  font-family: 'Courier New', Courier, monospace
-}
 
 .item_list {
   list-style-type: none;
+}
+
+.graph_canvas {
+  height: 400px;
 }
