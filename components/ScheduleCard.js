@@ -3,16 +3,10 @@ import Link from 'next/link'
 import FormattedRange from '../components/FormattedRange';
 import { isToday, isPast, isFuture } from 'date-fns'
 
-
 export default function ScheduleCard({ schedule }) {
-  console.log("ScheduleCard", schedule);
-
   let startDateTime = new Date(schedule.start);
   let endDateTime = new Date(schedule.end);
-
   let className = styles.card;
-
-  console.log("className", className, " typeof className=", typeof className);
 
   if (isToday(startDateTime)) {
     className += " " + styles.today;

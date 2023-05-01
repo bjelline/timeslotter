@@ -7,13 +7,6 @@ import ScheduleCards from '../components/ScheduleCards';
 import React, { useState, useEffect } from 'react';
 
 
-async function insertSchedule() {
-  let { data, error } = await supabase.from('schedules').insert([
-    { title: 'a new Schedule', description: 'of things', start: '2021-05-01 20:30:00', end: '2021-05-31 22:00:00' },
-  ]);
-  console.log("insert error=", error, "data=", data);
-}
-
 export async function getServerSideProps() {
   let { data, error } = await supabase.from('schedules').select('id, title, description, start, end').order('start', { ascending: true });
   if( error ) {
