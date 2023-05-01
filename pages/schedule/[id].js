@@ -6,12 +6,12 @@ import EventStatus from '../../components/EventStatus';
 import EventList from '../../components/EventList';
 import ResetButton from '../../components/ResetButton';
 import { useState, useEffect, useLayoutEffect } from 'react';
-import { createClient } from '@supabase/supabase-js';
-import { supabase } from '../../lib/supabaseClient.js';
-
+import { useUser, useSupabaseClient } from '@supabase/auth-helpers-react'
+import { createServerSupabaseClient } from '@supabase/auth-helpers-nextjs'
 
 export async function getServerSideProps(context) {
   const { id } = context.query;
+  const supabase = createServerSupabaseClient(context)
   console.log("serverside in ShowSchedule: try to load id", id);
 
   let { data: schedule, error: schedulesError } = await supabase
@@ -53,9 +53,24 @@ export async function getServerSideProps(context) {
 export default function ShowSchedule(props) {
   const router = useRouter();
   const { id } = router.query;
-
+  const supabaseClient = useSupabaseClient()
+  const user = useUser()
   const [schedule, setSchedule] = useState({});
   const [items, setItems] = useState([]);
+
+  const currentIndex = findIfCurrent(items);
+
+  function findIfCurrent(items) {
+    const now = new Date();
+    const index = items.findIndex((item) => {
+      const start = new Date(item.planned_start_at);
+      const end = new Date(item.planned_end_at);
+      return (start <= now && now <= end);
+    });
+    return index;
+  }
+
+
 
   /* realtime disabled
   const [supabaseClient, setSupabaseClient] = useState(null);
@@ -166,7 +181,9 @@ export default function ShowSchedule(props) {
       </Head>
 
       <main className={styles.main}>
-        <ResetButton scheduleId={id} />
+        {user ? (
+          <ResetButton scheduleId={id} />
+        ) : (<></>)}
         {((!schedule) || (!schedule.start)) ? (
           <p>...loading schedule...</p>
         ) : (
@@ -175,12 +192,16 @@ export default function ShowSchedule(props) {
             <h1 className={styles.title}>
               {schedule.title}
             </h1>
-            <p>{schedule.description}</p>
+            <p className="pb-5">{schedule.description}</p>
             {items.length == 0 ? (
               <p>Noch Keine Punkte auf der Tagesordnung.</p>
             ) : (
               <>
-                <EventStatus item={items[0]} />
+                {currentIndex >= 0 ? (
+                  <EventStatus item={items[0]} />
+                ) : (
+                  <p></p>
+                )}
                 <EventList items={items} />
               </>
             )}
