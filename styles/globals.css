@@ -78,3 +78,19 @@ nav {
   gap: 1rem;
 }
 
+
+li.past {
+  text-decoration: line-through;
+  list-style-type: circle;
+
+}
+
+li.current {
+  font-weight: bold;
+  list-style-type: disc;
+}
+
+li.future {
+  list-style-type: circle;
+
+}

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { adminRewriteScheduleStartNow } from "../lib/supabaseClient.js";
 
-export default function ResetButton({scheduleId}) {
+export default function ResetButton({scheduleId, handleComplete }) {
   const [loading, setLoading] = useState(false);
 
   async function handleButtonClick() {
@@ -17,6 +17,8 @@ export default function ResetButton({scheduleId}) {
       if (!res.ok) {
         throw new Error('Failed to call function');
       }
+      console.log("done with serverside, initiating rerender");
+      handleComplete();
     } catch (error) {
       console.error(error);
     }
