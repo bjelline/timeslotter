@@ -2,9 +2,9 @@ import Head from 'next/head';
 import styles from '../../styles/Home.module.css';
 import { useRouter } from 'next/router';
 import FormattedRange from '../../components/FormattedRange';
-import EventStatus from '../../components/EventStatus';
-import EventList from '../../components/EventList';
+import EventDashboard from '../../components/EventDashboard';
 import ResetButton from '../../components/ResetButton';
+import AdminBar from '../../components/AdminBar';
 import { useState, useEffect, useLayoutEffect } from 'react';
 import { useUser, useSupabaseClient } from '@supabase/auth-helpers-react'
 import { createServerSupabaseClient } from '@supabase/auth-helpers-nextjs';
@@ -32,23 +32,13 @@ export async function getServerSideProps(context) {
   if (itemsError) {
     items = [];
   }
-  // console.log("serverside in ShowSchedule: items=", items);
+  console.log("serverside in ShowSchedule: schedule and ", items.length, " items for ", id);
 
 
   return {
     props: { schedule: schedule, items: items }
   }
 }
-
-
-// realtime
-
-// supabase
-//   .channel('any')
-//   .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'items' }, handleItemInserted)
-//   .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'items' }, handleItemUpdated)
-//   .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'schemas' }, handleSchemaUpdated)
-//   .subscribe()
 
 export default function ShowSchedule(props) {
   const router = useRouter();
@@ -59,7 +49,7 @@ export default function ShowSchedule(props) {
   const [items, setItems] = useState([]);
 
 
-  const currentIndex = findIfCurrent(items);
+  //  = findIfCurrent(items);
 
   function findIfCurrent(items) {
     const now = new Date();
@@ -93,7 +83,7 @@ export default function ShowSchedule(props) {
 
       <main className={styles.main}>
         {user ? (
-          <ResetButton scheduleId={id} handleComplete={rerenderThisComponent} />
+          <AdminBar supabaseClient={supabaseClient} scheduleId={id} handleComplete={rerenderThisComponent} />
         ) : (<></>)}
         {((!schedule) || (!schedule.start)) ? (
           <p>...loading schedule...</p>
@@ -107,14 +97,7 @@ export default function ShowSchedule(props) {
             {items.length == 0 ? (
               <p>Noch Keine Punkte auf der Tagesordnung.</p>
             ) : (
-              <>
-                {currentIndex >= 0 ? (
-                  <EventStatus item={items[currentIndex]} />
-                ) : (
-                  <p></p>
-                )}
-                <EventList items={items} currentIndex={currentIndex} />
-              </>
+              <EventDashboard items={items} />
             )}
           </>
         )}

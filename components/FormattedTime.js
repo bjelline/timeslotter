@@ -1,5 +1,9 @@
 import React from 'react';
 
+import { FlapDisplay, Presets } from 'react-split-flap-effect';
+
+
+
 export default function FormattedTime(props) {
   let { time } = props;
 
@@ -12,6 +16,19 @@ export default function FormattedTime(props) {
 
   let formattedTime = new Intl.DateTimeFormat(locale, options).format(new Date(time));
 
-  return <span className="time">{formattedTime}</span>;
+  return (
+    <span className="w-14 text-right" >{formattedTime}</span>
+  )
+
+  return (
+    <FlapDisplay
+      className="flap-display"
+      chars={Presets.NUM + ':'}
+      length={formattedTime.length}
+      value={formattedTime}
+      timing={30}
+    />
+  )
+
 }
 
