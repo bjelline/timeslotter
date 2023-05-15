@@ -2,7 +2,6 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import FormattedRange from '../../components/FormattedRange';
 import EventDashboard from '../../components/EventDashboard';
-import ResetButton from '../../components/ResetButton';
 import AdminBar from '../../components/AdminBar';
 import { useState, useEffect, useLayoutEffect } from 'react';
 import { useUser, useSupabaseClient } from '@supabase/auth-helpers-react'
@@ -63,7 +62,7 @@ export default function ShowSchedule(props) {
   }
 
   return (
-    <div className="container">
+    <div className="my_container">
       <Head>
         <title>{`Timeslotter - ${schedule.title}`}</title>
         <meta name="description" content="thisschedule" />

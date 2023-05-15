@@ -18,43 +18,45 @@ const LoginPage = () => {
     }
     // Only run query once user is logged in.
     if (user) loadData()
-  }, [user, subabaseClient])
+  }, [user, supabaseClient])
 
   if (!user)
     return (
-      <div className="container">
+      <>
         <Head>
           <title>Timeslotter - Login and Logout</title>
           <link rel="icon" href="/favicon.ico" />
         </Head>
-
-        <main className="main">
-          <Auth
-            redirectTo="http://localhost:3000/"
-            appearance={{ theme: ThemeSupa }}
-            supabaseClient={supabaseClient}
-            providers={['google', 'github']}
-            socialLayout="horizontal"
-          />
-        </main>
-      </div>
+        <div className="my_container">
+          <main className="main">
+            <Auth
+              redirectTo="http://localhost:3000/"
+              appearance={{ theme: ThemeSupa }}
+              supabaseClient={supabaseClient}
+              providers={['google', 'github']}
+              socialLayout="horizontal"
+            />
+          </main>
+        </div>
+      </>
     )
 
   return (
-    <div className="container">
+    <>
       <Head>
         <title>Timeslotter - Login and Logout</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
-      <main className="main">
-        <button className="rounded-md bg-blue-700 p-1 text-white" onClick={() => supabaseClient.auth.signOut()}>Sign out</button>
-        <p>user:</p>
-        <pre>{JSON.stringify(user, null, 2)}</pre>
-        <p>client-side data fetching with RLS</p>
-        <pre>{JSON.stringify(data, null, 2)}</pre>
-      </main>
-    </div>
+      <div className="my_container">
+        <main className="main">
+          <button className="rounded-md bg-blue-700 p-1 text-white" onClick={() => supabaseClient.auth.signOut()}>Sign out</button>
+          <p>user:</p>
+          <pre>{JSON.stringify(user, null, 2)}</pre>
+          <p>client-side data fetching with RLS</p>
+          <pre>{JSON.stringify(data, null, 2)}</pre>
+        </main>
+      </div>
+    </>
   )
 }
 

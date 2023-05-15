@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { adminRewriteScheduleStartNow } from "../lib/supabaseClient.js";
 
 export default function ResetButton({supabaseClient, scheduleId, handleComplete }) {
   const [loading, setLoading] = useState(false);

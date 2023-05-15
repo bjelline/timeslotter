@@ -1,8 +1,5 @@
 import React from 'react';
 
-
-
-
 export default function FormattedTime(props) {
   let { time } = props;
 
@@ -16,7 +13,7 @@ export default function FormattedTime(props) {
   let formattedTime = new Intl.DateTimeFormat(locale, options).format(new Date(time));
 
   return (
-    <span className="w-14 text-right" >{formattedTime}</span>
+    <span className="w-18 text-right font-mono" >{formattedTime}</span>
   )
 }
 /*

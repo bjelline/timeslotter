@@ -74,7 +74,7 @@ export default function ShowSchedule() {
   }
 
   return (
-    <div className="container">
+    <div className="my_container">
       <Head>
         <title>{`Timeslotter - ${schedule.title}`}</title>
         <meta name="description" content="thisschedule" />

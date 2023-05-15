@@ -39,7 +39,7 @@ export const getServerSideProps = async (context) => {
 
 export default function Profile({ user, schedules }) {
   return (
-    <div className="container">
+    <>
       <Head>
         <title>Timeslotter - Profil</title>
         <link rel="icon" href="/favicon.ico" />
@@ -82,6 +82,6 @@ export default function Profile({ user, schedules }) {
           </details>
         </div>
       </main>
-    </div>
+    </>
   )
 }
