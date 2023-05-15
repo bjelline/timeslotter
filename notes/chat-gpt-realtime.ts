@@ -1,5 +1,4 @@
 import Head from 'next/head';
-import styles from '../../styles/Home.module.css';
 import { useRouter } from 'next/router';
 import FormattedRange from '../../components/FormattedRange';
 import EventStatus from '../../components/EventStatus';
@@ -75,7 +74,7 @@ export default function ShowSchedule() {
   }
 
   return (
-    <div className={styles.container}>
+    <div className="container">
       <Head>
         <title>{`Timeslotter - ${schedule.title}`}</title>
         <meta name="description" content="thisschedule" />

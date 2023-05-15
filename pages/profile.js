@@ -1,5 +1,4 @@
 import Head from 'next/head'
-import styles from '../styles/Home.module.css'
 import Link from 'next/link'
 
 import { createServerSupabaseClient } from '@supabase/auth-helpers-nextjs'
@@ -40,13 +39,13 @@ export const getServerSideProps = async (context) => {
 
 export default function Profile({ user, schedules }) {
   return (
-    <div className={styles.container}>
+    <div className="container">
       <Head>
         <title>Timeslotter - Profil</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className={styles.main}>
+      <main className="main">
         <div>
           <h1 className="pb-2">Mein Profile</h1>
           <p>{user.email}</p>

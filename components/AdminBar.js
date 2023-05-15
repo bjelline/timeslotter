@@ -34,7 +34,9 @@ export default function ResetButton({supabaseClient, scheduleId, handleComplete 
     console.log("calling plan_to_fit", params);
     const { data, error } = await supabaseClient.rpc('plan_to_fit', params);
     console.log("done calling, got", data, error);
-    setLoading(false);  }
+    setLoading(false);
+    handleComplete();
+  }
   async function handleOverrunClick() {
     setLoading(true);
     let params = { "p_schedule_id": scheduleId};
@@ -42,6 +44,7 @@ export default function ResetButton({supabaseClient, scheduleId, handleComplete 
     const { data, error } = await supabaseClient.rpc('plan_to_fixed_length', params);
     console.log("done calling, got", data, error);
     setLoading(false);
+    handleComplete();
   }
   return (
     <div>

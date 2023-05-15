@@ -1,4 +1,3 @@
-import styles from '../styles/Home.module.css'
 import Link from 'next/link'
 import FormattedRange from '../components/FormattedRange';
 import { isToday, isPast, isFuture } from 'date-fns'
@@ -6,14 +5,14 @@ import { isToday, isPast, isFuture } from 'date-fns'
 export default function ScheduleCard({ schedule }) {
   let startDateTime = new Date(schedule.start);
   let endDateTime = new Date(schedule.end);
-  let className = styles.card;
+  let className = "card";
 
   if (isToday(startDateTime)) {
-    className += " " + styles.today;
+    className += " " + "today";
   } else if (isPast(startDateTime)) {
-    className += " " + styles.past;
+    className += " " + "past";
   } else if (isFuture(startDateTime)) {
-    className += " " + styles.future;
+    className += " " + "future";
   }
 
   return (

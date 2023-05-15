@@ -1,5 +1,4 @@
 import Head from 'next/head'
-import styles from '../styles/Home.module.css'
 
 import { Auth } from '@supabase/auth-ui-react'
 import { ThemeSupa } from '@supabase/auth-ui-shared'
@@ -19,17 +18,17 @@ const LoginPage = () => {
     }
     // Only run query once user is logged in.
     if (user) loadData()
-  }, [user])
+  }, [user, subabaseClient])
 
   if (!user)
     return (
-      <div className={styles.container}>
+      <div className="container">
         <Head>
           <title>Timeslotter - Login and Logout</title>
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <main className={styles.main}>
+        <main className="main">
           <Auth
             redirectTo="http://localhost:3000/"
             appearance={{ theme: ThemeSupa }}
@@ -42,13 +41,13 @@ const LoginPage = () => {
     )
 
   return (
-    <div className={styles.container}>
+    <div className="container">
       <Head>
         <title>Timeslotter - Login and Logout</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className={styles.main}>
+      <main className="main">
         <button className="rounded-md bg-blue-700 p-1 text-white" onClick={() => supabaseClient.auth.signOut()}>Sign out</button>
         <p>user:</p>
         <pre>{JSON.stringify(user, null, 2)}</pre>

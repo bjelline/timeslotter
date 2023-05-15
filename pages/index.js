@@ -1,10 +1,7 @@
 import Head from 'next/head'
-import Image from 'next/image'
-import styles from '../styles/Home.module.css'
 import { supabase } from './../lib/supabaseClient';
-import FormattedRange from '../components/FormattedRange';
 import ScheduleCards from '../components/ScheduleCards';
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
 
 export async function getServerSideProps() {
@@ -20,26 +17,26 @@ export async function getServerSideProps() {
 
 export default function Home({schedules}) {
   return (
-    <div className={styles.container}>
+    <>
       <Head>
         <title>Timeslotter - keep tracks of timeslots</title>
         <meta name="description" content="a one page app to keep track of timeslots" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>
+      <main className="main">
+        <h1 className="title">
           Timeslotter
         </h1>
 
-        <p className={styles.description}>
+        <p className="description">
           Let&apos;s set up your schedule!
         </p>
 
+        <div className="cards_container">
         <ScheduleCards schedules={schedules}  />
+        </div>
       </main>
-
-
-    </div>
+    </>
   )
 }

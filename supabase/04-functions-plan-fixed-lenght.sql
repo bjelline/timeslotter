@@ -34,5 +34,5 @@ $$;
 GRANT EXECUTE ON FUNCTION plan_to_fixed_length TO authenticated;
 
 
-select plan_to_fixed_length('b61cf9f9-ba0d-4600-a345-ae255afb27bb', 10);
+-- select plan_to_fixed_length('b61cf9f9-ba0d-4600-a345-ae255afb27bb', 10);
 

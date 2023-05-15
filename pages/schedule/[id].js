@@ -1,5 +1,4 @@
 import Head from 'next/head';
-import styles from '../../styles/Home.module.css';
 import { useRouter } from 'next/router';
 import FormattedRange from '../../components/FormattedRange';
 import EventDashboard from '../../components/EventDashboard';
@@ -20,6 +19,8 @@ export async function getServerSideProps(context) {
     .eq('id', id)
     .single();
   if (schedulesError) {
+    console.log("error loading schedule", schedulesError);
+
     schedule = {};
   }
   // console.log("serverside in ShowSchedule: schedule=", schedule);
@@ -29,10 +30,12 @@ export async function getServerSideProps(context) {
     .select('*')
     .eq('schedule_id', id)
     .order('planned_start_at', { ascending: true });
+
   if (itemsError) {
+    console.log("error loading items", itemsError);
     items = [];
   }
-  console.log("serverside in ShowSchedule: schedule and ", items.length, " items for ", id);
+  // console.log("serverside in ShowSchedule: schedule and ", items.length, " items for ", id);
 
 
   return {
@@ -48,20 +51,6 @@ export default function ShowSchedule(props) {
   const [schedule, setSchedule] = useState({});
   const [items, setItems] = useState([]);
 
-
-  //  = findIfCurrent(items);
-
-  function findIfCurrent(items) {
-    const now = new Date();
-    const index = items.findIndex((item) => {
-      const start = new Date(item.planned_start_at);
-      const end = new Date(item.planned_end_at);
-      return (start <= now && now <= end);
-    });
-    return index;
-  }
-
-
   useEffect(() => {
     console.log("another useEffect in ShowSchedule, copying props to state");
     setSchedule(props.schedule);
@@ -74,14 +63,14 @@ export default function ShowSchedule(props) {
   }
 
   return (
-    <div className={styles.container}>
+    <div className="container">
       <Head>
         <title>{`Timeslotter - ${schedule.title}`}</title>
         <meta name="description" content="thisschedule" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className={styles.main}>
+      <main className="main">
         {user ? (
           <AdminBar supabaseClient={supabaseClient} scheduleId={id} handleComplete={rerenderThisComponent} />
         ) : (<></>)}
@@ -89,15 +78,15 @@ export default function ShowSchedule(props) {
           <p>...loading schedule...</p>
         ) : (
           <>
-            <p><FormattedRange start={schedule.start} end={schedule.end} /></p>
-            <h1 className={styles.title}>
+            <h1 className="title">
               {schedule.title}
             </h1>
-            <p className="pb-5">{schedule.description}</p>
+            <p className="mb-5 w-80 text-center">{schedule.description}</p>
+            <p className="mb-5"><FormattedRange start={schedule.start} end={schedule.end} /></p>
             {items.length == 0 ? (
               <p>Noch Keine Punkte auf der Tagesordnung.</p>
             ) : (
-              <EventDashboard items={items} />
+              <EventDashboard supabaseClient={supabaseClient} schedule={schedule} items={items} />
             )}
           </>
         )}
