@@ -8,6 +8,17 @@ export default function NewSchedule(props) {
   const user = useUser();
   const superbaseClient = useSupabaseClient();
 
+  /*
+  const ScheduleSchema = Yup.object().shape({
+    title: Yup.string().max(60, "Too long!").required("Required."),
+    description: Yup.string().max(240, "Too long!"),
+    date: Yup.date().required("Required."),
+    start: Yup.time().required("Required."),
+    end: Yup.time().min(new Date(state.start), intl.formatMessage({ id: 'end.error.min' })).required("Required."),
+    hard_end: Yup.time()
+  });
+  */
+
   const handleSubmit = async (event) => {
     console.log('form.handleSubmit');
     // Stop the form from submitting and refreshing the page.
@@ -26,7 +37,9 @@ export default function NewSchedule(props) {
       title: event.target.title.value,
       description: event.target.description.value,
       start: event.target.date.value + "T" + event.target.start.value,
-      end: event.target.date.value + "T" + event.target.end.value
+      end: event.target.date.value + "T" + event.target.end.value,
+      time_per_slot: event.target.time_per_slot.value,
+      user_id: user.id
     }
     if(event.target.hard_end.value.length > 0) {
       schedule.hard_end = event.target.date.value + "T" + event.target.hard_end.value;
@@ -83,6 +96,9 @@ export default function NewSchedule(props) {
 
           <label htmlFor="hard_end">Hard End Time - no overtime beyond this</label>
           <input type="time" id="hard_end" name="hard_end" />
+
+          <label htmlFor="time_per_slot">Length of Timeslot in Minutes</label>
+          <input type="number" id="time_per_slot" name="time_per_slot" value="15" />
 
           <button type="submit">Submit</button>
         </form>

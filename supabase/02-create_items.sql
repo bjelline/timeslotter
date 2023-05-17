@@ -11,5 +11,5 @@ create table
     schedule_id uuid null,
     name character varying null,
     constraint item_pkey primary key (id),
-    constraint items_schedule_id_fkey foreign key (schedule_id) references schedules (id)
+    constraint items_schedule_id_fkey foreign key (schedule_id) references schedules (id) on delete cascade
   ) tablespace pg_default;

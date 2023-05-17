@@ -3,10 +3,9 @@ import { supabase } from './../lib/supabaseClient';
 import ScheduleCards from '../components/ScheduleCards';
 import React from 'react';
 
-
 export async function getServerSideProps() {
-  let { data, error } = await supabase.from('schedules').select('id, title, description, start, end').order('start', { ascending: true });
-  if( error ) {
+  let { data, error } = await supabase.from('schedules').select('*').order('start', { ascending: true });
+  if (error) {
     data = [];
   }
   return {
@@ -14,9 +13,7 @@ export async function getServerSideProps() {
   }
 }
 
-
-export default function Home({schedules}) {
-
+export default function Home({ schedules }) {
   return (
     <>
       <Head>
@@ -35,7 +32,7 @@ export default function Home({schedules}) {
         </p>
 
         <div className="cards_container">
-        <ScheduleCards schedules={schedules}  />
+          <ScheduleCards schedules={schedules} />
         </div>
       </main>
     </>
