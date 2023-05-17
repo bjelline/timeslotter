@@ -16,6 +16,7 @@ export async function getServerSideProps() {
 
 
 export default function Home({schedules}) {
+
   return (
     <>
       <Head>

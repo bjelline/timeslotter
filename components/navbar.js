@@ -27,6 +27,11 @@ export default function Navbar() {
     <nav>
       <Link
         href={{
+          pathname: '/schedule/new'
+        }}
+      >New Event</Link>
+      <Link
+        href={{
           pathname: '/'
         }}
       >Schedules</Link>
