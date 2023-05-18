@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { useState } from "react";
 
 export default function ResetButton({supabaseClient, scheduleId, handleComplete }) {
@@ -56,6 +57,7 @@ export default function ResetButton({supabaseClient, scheduleId, handleComplete 
       <button className="rounded-md bg-blue-700 p-1 m-3 text-white" disabled={loading} onClick={handleOverrunClick}>
         {loading ? "Loading..." : "Plan to fixed length"}
       </button>
+      <Link href={`/admin/schedule/${scheduleId}/edit`}>Edit</Link>
     </div>
   );
 }
