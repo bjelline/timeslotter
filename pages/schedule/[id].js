@@ -77,7 +77,7 @@ export default function ShowSchedule(props) {
 
       <main className="main">
         {user ? (
-          <AdminBar supabaseClient={supabaseClient} scheduleId={id} handleComplete={rerenderThisComponent} />
+          <AdminBar supabaseClient={supabaseClient} scheduleId={id} handleComplete={rerenderThisComponent} setItems={setItems} />
         ) : (<></>)}
         {((!schedule) || (!schedule.start)) ? (
           <p>...loading schedule...</p>
@@ -93,9 +93,9 @@ export default function ShowSchedule(props) {
             {items.length == 0 ? (
               <p>Noch Keine Punkte auf der Tagesordnung.</p>
             ) : (
-              <EventDashboard supabaseClient={supabaseClient} schedule={schedule} items={items} />
+              <EventDashboard supabaseClient={supabaseClient} schedule={schedule} items={items} setItems={setItems} />
             )}
-            <AddItem schedule={schedule} />
+            <AddItem schedule={schedule} items={items} setItems={setItems} />
           </>
         )}
       </main>

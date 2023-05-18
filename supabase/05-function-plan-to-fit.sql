@@ -1,7 +1,7 @@
 drop function plan_to_fit;
 
 create function plan_to_fit(p_schedule_id uuid)
-returns integer
+returns setof items
 language plpgsql
 as $$
 DECLARE
@@ -41,12 +41,8 @@ BEGIN
   END LOOP;
 
   -- Return the number of updated rows
-  RETURN v_row_number - 1;
+  RETURN QUERY select * from items where schedule_id = p_schedule_id order by start_at;
 END;
 $$;
 
 GRANT EXECUTE ON FUNCTION plan_to_fit TO authenticated;
-
-
-select plan_to_fit('b61cf9f9-ba0d-4600-a345-ae255afb27bb');
-

@@ -4,7 +4,7 @@ import { useUser, useSupabaseClient } from '@supabase/auth-helpers-react';
 import { useState } from 'react';
 import OverTimeReport from './OverTimeReport';
 
-export default function EventDashboard({ supabaseClient, schedule: scheduleProp, items: itemsProp }) {
+export default function EventDashboard({ supabaseClient, setItems, schedule: scheduleProp, items: itemsProp }) {
   let items = itemsProp.map((item) => {
     return {
       ...item,
@@ -50,14 +50,15 @@ export default function EventDashboard({ supabaseClient, schedule: scheduleProp,
     let index = parseInt(e.target.id.split('_')[2]);
     let item = items[index];
     let timestamp = new Date().toISOString();
-    console.log("calling handleStartClick on", index, "item id=", item.id, "planned=", item.start_at, "set started=", timestamp);
-    // const { error } = await supabaseClient
-    //   .from('items')
-    //   .update({ start_at: timestamp, status: 'current' })
-    //   .eq('id', items[index].id);
-    const { error } = await supabaseClient.rpc('start_schedule', { p_schedule_id: schedule.id, p_item_id: item.id, p_must_fit: mustFit });
+    let params =  { p_schedule_id: schedule.id, p_item_id: item.id, p_must_fit: mustFit };
+    console.log("calling handleStartClick on", params);
+    const { data,  error } = await supabaseClient.rpc('start_schedule',params);
     console.log("error?", error);
-    router.push(`/schedule/${id}`);
+    console.log("data?", data);
+    if(!error) {
+      setItems(data);
+    }
+    // router.push(`/schedule/${id}`);
   }
 
   async function handleStopClick(e) {
@@ -67,7 +68,16 @@ export default function EventDashboard({ supabaseClient, schedule: scheduleProp,
       .from('items')
       .update({ end_at: new Date().toISOString(), status: 'past' })
       .eq('id', items[index].id);
-    router.push(`/schedule/${id}`);
+    const { data: new_items, error: new_items_error } = await supabaseClient
+      .from('items')
+      .select('*')
+      .eq('schedule_id', schedule.id)
+      .order('start_at', { ascending: true });
+    console.log("error?", new_items_error);
+    console.log("data?", new_items);
+    if(!error) {
+      setItems(new_items);
+    }
   }
   return (
     <>
@@ -134,28 +144,3 @@ export default function EventDashboard({ supabaseClient, schedule: scheduleProp,
     </>
   )
 }
-
-
-/*
-
-✓
-
-      {isRunning ? (
-        <div className="flex items-center gap-0.5 m-5 p-5 bg-slate-50/50 rounded-full w-full">
-          <FormattedTime time={items[currentIndex].start_at} /> -
-          <FormattedTime time={items[currentIndex].end_at} />
-          <h2 className="">
-            {items[currentIndex].name}
-          </h2>
-          <div className="ml-5">
-            {(remainingTime > 0) ? (
-              <Timer isPlaying={true} duration={fullTime} initialRemainingTime={remainingTime} />
-            ) : (
-              <OverTimer isPlaying={true} duration={fullTime} initialRemainingTime={-remainingTime} />
-            )}
-          </div>
-        </div>
-      ) : (
-        <p></p>
-      )}
-*/

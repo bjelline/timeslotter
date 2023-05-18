@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useState } from "react";
 
-export default function ResetButton({supabaseClient, scheduleId, handleComplete }) {
+export default function ResetButton({supabaseClient, scheduleId, handleComplete, setItems }) {
   const [loading, setLoading] = useState(false);
 
   async function handleButtonClick(url) {
@@ -34,8 +34,10 @@ export default function ResetButton({supabaseClient, scheduleId, handleComplete 
     console.log("calling plan_to_fit", params);
     const { data, error } = await supabaseClient.rpc('plan_to_fit', params);
     console.log("done calling, got", data, error);
-    setLoading(false);
-    handleComplete();
+    if(!error) {
+      setLoading(false);
+      setItems(data);
+    }
   }
   async function handleOverrunClick() {
     setLoading(true);
@@ -43,21 +45,23 @@ export default function ResetButton({supabaseClient, scheduleId, handleComplete 
     console.log("calling plan_to_fixed_length", params);
     const { data, error } = await supabaseClient.rpc('plan_to_fixed_length', params);
     console.log("done calling, got", data, error);
-    setLoading(false);
-    handleComplete();
+    if(!error) {
+      setLoading(false);
+      setItems(data);
+    }
   }
   return (
     <div>
-      <button className="rounded-md bg-blue-700 p-1 m-3 text-white" disabled={loading} onClick={handleResetClick}>
-        {loading ? "Loading..." : "Start Event Now"}
+      <button className={`rounded-md ${loading ? "bg-gray-400" : "bg-blue-700"} p-1 m-3 text-white`} disabled={loading} onClick={handleResetClick}>
+        {"Start Event Now"}
       </button>
-      <button className="rounded-md bg-blue-700 p-1 m-3 text-white" disabled={loading} onClick={handleFitClick}>
-        {loading ? "Loading..." : "Plan to fit"}
+      <button className={`rounded-md ${loading ? "bg-gray-400" : "bg-blue-700"} p-1 m-3 text-white`} disabled={loading} onClick={handleFitClick}>
+        {"Plan to fit"}
       </button>
-      <button className="rounded-md bg-blue-700 p-1 m-3 text-white" disabled={loading} onClick={handleOverrunClick}>
-        {loading ? "Loading..." : "Plan to fixed length"}
+      <button className={`rounded-md ${loading ? "bg-gray-400" : "bg-blue-700"} p-1 m-3 text-white`} disabled={loading} onClick={handleOverrunClick}>
+        {"Plan to fixed length"}
       </button>
-      <Link href={`/admin/schedule/${scheduleId}/edit`}>Edit</Link>
+      <Link href={`/schedule/${scheduleId}/edit`}>Edit</Link>
     </div>
   );
 }

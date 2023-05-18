@@ -1,7 +1,7 @@
 drop function plan_to_fixed_length;
 
 
-create function plan_to_fixed_length(p_schedule_id uuid) returns integer language plpgsql as $$
+create function plan_to_fixed_length(p_schedule_id uuid) returns setof items language plpgsql as $$
 DECLARE
   v_start_timestamp timestamp with time zone;
   v_timeslot_interval INTERVAL;
@@ -37,8 +37,7 @@ BEGIN
     v_row_number := v_row_number + 1;
   END LOOP;
 
-  -- Return the number of updated rows
-  RETURN v_row_number - 1;
+  RETURN QUERY SELECT * FROM items WHERE schedule_id = p_schedule_id ORDER BY start_at;
 END;
 $$;
 
