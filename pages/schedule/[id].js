@@ -1,5 +1,6 @@
 import Head from 'next/head';
 import { useRouter } from 'next/router';
+import FormattedTime from '../../components/FormattedTime';
 import FormattedRange from '../../components/FormattedRange';
 import EventDashboard from '../../components/EventDashboard';
 import AdminBar from '../../components/AdminBar';
@@ -29,17 +30,21 @@ export async function getServerSideProps(context) {
     .from('items')
     .select('*')
     .eq('schedule_id', id)
-    .order('planned_start_at', { ascending: true });
+    .order('start_at', { ascending: true });
 
   if (itemsError) {
     console.log("error loading items", itemsError);
     items = [];
   }
   // console.log("serverside in ShowSchedule: schedule and ", items.length, " items for ", id);
+  console.log("first item end_at is", typeof items[0].end_at, " is ", items[0].end_at);
 
 
   return {
-    props: { schedule: schedule, items: items }
+    props: {
+      schedule: schedule,
+      items: items
+    }
   }
 }
 
@@ -82,7 +87,14 @@ export default function ShowSchedule(props) {
               {schedule.title}
             </h1>
             <p className="mb-5 w-80 text-center">{schedule.description}</p>
-            <p className="mb-5"><FormattedRange start={schedule.start} end={schedule.end} /></p>
+            <p className="mb-5">
+              <FormattedRange start={schedule.start} end={schedule.end} />
+              {schedule.hard_end && (
+                <span className="text-red-500"> (Hard End: {' '}
+                  <FormattedTime time={schedule.hard_end}  />)
+                </span>
+              )}
+            </p>
             {items.length == 0 ? (
               <p>Noch Keine Punkte auf der Tagesordnung.</p>
             ) : (

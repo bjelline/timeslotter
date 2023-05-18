@@ -12,7 +12,7 @@ DECLARE
 BEGIN
   v_start_timestamp := (SELECT MAX(possible_start) AS max_possible_start
 FROM (
-  SELECT MAX(planned_end_at) AS possible_start
+  SELECT MAX(end_at) AS possible_start
   FROM items
   WHERE schedule_id = p_schedule_id
   UNION ALL
@@ -22,8 +22,8 @@ FROM (
 ) AS subquery);
   v_timeslot_interval := (select time_per_slot from schedules where id = p_schedule_id) * interval '1 minute';
 
-  -- Iterate over the cursor and update the planned_start_at and planned_end_at columns
-  INSERT INTO items (schedule_id, name, planned_start_at, planned_end_at)
+  -- Iterate over the cursor and update the start_at and end_at columns
+  INSERT INTO items (schedule_id, name, start_at, end_at)
   VALUES (p_schedule_id, p_name, v_start_timestamp, v_start_timestamp + v_timeslot_interval)
   RETURNING id INTO inserted_id;
 

@@ -65,7 +65,7 @@ export default function ShowSchedule() {
       .from('items')
       .select('*')
       .eq('schedule_id', id)
-      .order('planned_start_at', { ascending: true });
+      .order('start_at', { ascending: true });
     if (error) {
       setItems([]);
     } else {

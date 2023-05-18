@@ -13,7 +13,7 @@ export default function EventList({items, currentIndex}) {
         className = 'future';
       }
       return (
-        <li key={item.id} className={className} tabIndex="0"><FormattedTime time={item.planned_start_at} /> {item.name}</li>
+        <li key={item.id} className={className} tabIndex="0"><FormattedTime time={item.start_at} /> {item.name}</li>
       )
     }
     )}
