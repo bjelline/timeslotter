@@ -8,16 +8,6 @@ export default function NewSchedule(props) {
   const user = useUser();
   const superbaseClient = useSupabaseClient();
 
-  /*
-  const ScheduleSchema = Yup.object().shape({
-    title: Yup.string().max(60, "Too long!").required("Required."),
-    description: Yup.string().max(240, "Too long!"),
-    date: Yup.date().required("Required."),
-    start: Yup.time().required("Required."),
-    end: Yup.time().min(new Date(state.start), intl.formatMessage({ id: 'end.error.min' })).required("Required."),
-    hard_end: Yup.time()
-  });
-  */
 
   const handleSubmit = async (event) => {
     console.log('form.handleSubmit');
@@ -41,9 +31,7 @@ export default function NewSchedule(props) {
       time_per_slot: event.target.time_per_slot.value,
       user_id: user.id
     }
-    if(event.target.hard_end.value.length > 0) {
-      schedule.hard_end = event.target.date.value + "T" + event.target.hard_end.value;
-    }
+
 
     console.dir(schedule);
 
@@ -77,7 +65,6 @@ export default function NewSchedule(props) {
         <form className="flex flex-col rounded-lg bg-white/50 p-5" action="/api/schedule/create" method="post"
           onSubmit={handleSubmit}>
           <h1>New Event</h1>
-          <p>Please add all the information</p>
 
           <label htmlFor="title">Title of the Event</label>
           <input type="text" id="title" name="title" value="Wichtiges Event" />
@@ -93,9 +80,6 @@ export default function NewSchedule(props) {
 
           <label htmlFor="end">End of Event</label>
           <input type="time" id="end" name="end" required />
-
-          <label htmlFor="hard_end">Hard End Time - no overtime beyond this</label>
-          <input type="time" id="hard_end" name="hard_end" />
 
           <label htmlFor="time_per_slot">Length of Timeslot in Minutes</label>
           <input type="number" id="time_per_slot" name="time_per_slot" value="15" />

@@ -38,16 +38,24 @@ export default function EventDashboard({ supabaseClient, schedule: scheduleProp,
   let fullTime = 0;
   let remainingTime = 0;
 
+  function diff_mins(dt1, dt2) {
+    let msec = new Date(dt2) - new Date(dt1);
+    let s = msec / 1000;
+    let mins = Math.round(s/60);
+    return mins;
+  }
+
 
   async function handleStartClick(e) {
     let index = parseInt(e.target.id.split('_')[2]);
     let item = items[index];
     let timestamp = new Date().toISOString();
     console.log("calling handleStartClick on", index, "item id=", item.id, "planned=", item.start_at, "set started=", timestamp);
-    const { error } = await supabaseClient
-      .from('items')
-      .update({ start_at: timestamp, status: 'current' })
-      .eq('id', items[index].id);
+    // const { error } = await supabaseClient
+    //   .from('items')
+    //   .update({ start_at: timestamp, status: 'current' })
+    //   .eq('id', items[index].id);
+    const { error } = await supabaseClient.rpc('start_schedule', { p_schedule_id: schedule.id, p_item_id: item.id, p_must_fit: mustFit });
     console.log("error?", error);
     router.push(`/schedule/${id}`);
   }
@@ -85,6 +93,9 @@ export default function EventDashboard({ supabaseClient, schedule: scheduleProp,
               <FormattedTime time={item.end_at} />
               {' '}
               <span className="text-gray-400 pl-2 pr-2">-</span>
+              {diff_mins(item.start_at, item.end_at)} Mins
+              <span className="text-gray-400 pl-2 pr-2">-</span>
+
               {item.name}
               {user && user.id == schedule.user_id && (() => {
                 switch (item.status) {

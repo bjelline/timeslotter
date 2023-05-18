@@ -89,11 +89,6 @@ export default function ShowSchedule(props) {
             <p className="mb-5 w-80 text-center">{schedule.description}</p>
             <p className="mb-5">
               <FormattedRange start={schedule.start} end={schedule.end} />
-              {schedule.hard_end && (
-                <span className="text-red-500"> (Hard End: {' '}
-                  <FormattedTime time={schedule.hard_end}  />)
-                </span>
-              )}
             </p>
             {items.length == 0 ? (
               <p>Noch Keine Punkte auf der Tagesordnung.</p>

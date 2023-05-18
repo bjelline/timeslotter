@@ -78,9 +78,7 @@ nav {
 
 
 li.past {
-  text-decoration: line-through;
   list-style-type: circle;
-
 }
 
 li.current {
@@ -266,7 +264,7 @@ li.future {
   background: var(--future-bg-color);
 }
 
-.today {
+.today, .current {
   background: var(--today-bg-color);
 }
 
