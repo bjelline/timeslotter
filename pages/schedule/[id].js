@@ -6,6 +6,7 @@ import AdminBar from '../../components/AdminBar';
 import { useState, useEffect, useLayoutEffect } from 'react';
 import { useUser, useSupabaseClient } from '@supabase/auth-helpers-react'
 import { createServerSupabaseClient } from '@supabase/auth-helpers-nextjs';
+import AddItem from '../../components/AddItem';
 
 export async function getServerSideProps(context) {
   const { id } = context.query;
@@ -14,7 +15,7 @@ export async function getServerSideProps(context) {
 
   let { data: schedule, error: schedulesError } = await supabase
     .from('schedules')
-    .select('id, title, description, start, end')
+    .select('*')
     .eq('id', id)
     .single();
   if (schedulesError) {
@@ -62,7 +63,7 @@ export default function ShowSchedule(props) {
   }
 
   return (
-    <div className="my_container">
+    <>
       <Head>
         <title>{`Timeslotter - ${schedule.title}`}</title>
         <meta name="description" content="thisschedule" />
@@ -87,9 +88,10 @@ export default function ShowSchedule(props) {
             ) : (
               <EventDashboard supabaseClient={supabaseClient} schedule={schedule} items={items} />
             )}
+            <AddItem schedule={schedule} />
           </>
         )}
       </main>
-    </div>
+    </>
   )
 }

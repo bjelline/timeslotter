@@ -10,7 +10,16 @@ DECLARE
   v_timeslot_interval INTERVAL;
   inserted_id uuid;
 BEGIN
-  v_start_timestamp := (select max end from items where schedule_id = p_schedule_id);
+  v_start_timestamp := (SELECT MAX(possible_start) AS max_possible_start
+FROM (
+  SELECT MAX(planned_end_at) AS possible_start
+  FROM items
+  WHERE schedule_id = p_schedule_id
+  UNION ALL
+  SELECT start AS possible_start
+  FROM schedules
+  WHERE id = p_schedule_id
+) AS subquery);
   v_timeslot_interval := (select time_per_slot from schedules where id = p_schedule_id) * interval '1 minute';
 
   -- Iterate over the cursor and update the planned_start_at and planned_end_at columns
@@ -24,4 +33,3 @@ END;
 $$;
 
 GRANT EXECUTE ON FUNCTION insert_next_item TO authenticated;
-

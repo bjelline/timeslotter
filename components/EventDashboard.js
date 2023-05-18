@@ -3,9 +3,11 @@ import OverTimer from './OverTimer';
 import FormattedTime from './FormattedTime';
 import { isToday, isPast, isFuture } from 'date-fns'
 import { useState } from 'react';
+import { useUser, useSupabaseClient } from '@supabase/auth-helpers-react';
 
 
 export default function EventDashboard({ supabaseClient, schedule, items }) {
+  const user = useUser();
   const [currentIndex, setCurrentIndex] = useState(-1);
   const [isRunning, setIsRunning] = useState(false);
 
@@ -28,7 +30,7 @@ export default function EventDashboard({ supabaseClient, schedule, items }) {
       const start = new Date(item.started_at);
       return (start <= now && item.ended_at == null);
     });
-    if(index >= 0) {
+    if (index >= 0) {
       setCurrentIndex(index);
       setIsRunning(true);
     }
@@ -61,7 +63,7 @@ export default function EventDashboard({ supabaseClient, schedule, items }) {
     console.log("calling handleStopClick on", index, "item", items[index]);
     const { error } = await supabaseClient
       .from('items')
-      .update({ ended_at: new Date().toISOString()  })
+      .update({ ended_at: new Date().toISOString() })
       .eq('id', items[index].id);
     setCurrentIndex(-1);
     setIsRunning(false);
@@ -82,20 +84,27 @@ export default function EventDashboard({ supabaseClient, schedule, items }) {
               {' '}
               <span className="text-gray-400 pl-2 pr-2">-</span>
               {item.name}
-              {isRunning && index == currentIndex ? (
-                <button
-                  id={`stop_item_${index}`}
-                  className="bg-blue-400  ml-4 pl-1 pr-1 rounded text-white show-on-hover"
-                  onClick={handleStopClick}>
-                  starten
-                </button>
+              {user && user.id == schedule.user_id ? (
+
+                <>
+                  {isRunning && (index == currentIndex) ? (
+                    <button
+                      id={`stop_item_${index}`}
+                      className="bg-blue-400  ml-4 pl-1 pr-1 rounded text-white show-on-hover"
+                      onClick={handleStopClick}>
+                      starten
+                    </button>
+                  ) : (
+                    <button
+                      id={`start_item_${index}`}
+                      className="bg-blue-400  ml-4 pl-1 pr-1 rounded text-white show-on-hover"
+                      onClick={handleStartClick}>
+                      starten
+                    </button>
+                  )}
+                </>
               ) : (
-                <button
-                  id={`start_item_${index}`}
-                  className="bg-blue-400  ml-4 pl-1 pr-1 rounded text-white show-on-hover"
-                  onClick={handleStartClick}>
-                  starten
-                </button>
+                <></>
               )}
             </li>
           )
