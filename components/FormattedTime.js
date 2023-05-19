@@ -1,33 +1,20 @@
 import React from 'react';
 
-export default function FormattedTime(props) {
-  let { time } = props;
-
+export default function FormattedTime( { time, className } ) {
   const locale = 'de';
 
   const options = {
     hour: 'numeric',
-    minute: 'numeric'
+    minute: '2-digit'
   };
 
   let formattedTime = new Intl.DateTimeFormat(locale, options).format(new Date(time));
+  if(formattedTime.startsWith('0')) formattedTime = formattedTime.slice(1);
 
   return (
-    <span className="w-18 text-right font-mono" >{formattedTime}</span>
+    <span className={`text-right font-mono ${className}`} >{formattedTime}</span>
   )
 }
-/*
-  import { FlapDisplay, Presets } from 'react-split-flap-effect';
 
-  return (
-    <FlapDisplay
-      className="flap-display"
-      chars={Presets.NUM + ':'}
-      length={formattedTime.length}
-      value={formattedTime}
-      timing={30}
-    />
-  )
-*/
 
 

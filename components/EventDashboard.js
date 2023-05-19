@@ -3,8 +3,11 @@ import { useRouter } from 'next/router';
 import { useUser, useSupabaseClient } from '@supabase/auth-helpers-react';
 import { useState } from 'react';
 import OverTimeReport from './OverTimeReport';
+import StartStopButtons from './StartStopButtons';
 
 export default function EventDashboard({ supabaseClient, setItems, schedule: scheduleProp, items: itemsProp }) {
+  // const [draggedItem, setDraggedItem] = useState(null);
+
   let items = itemsProp.map((item) => {
     return {
       ...item,
@@ -27,10 +30,10 @@ export default function EventDashboard({ supabaseClient, setItems, schedule: sch
     return current.end_at > max ? current.end_at : max;
   }, -Infinity);
   let timeSlotLength = items
-  .filter((item) => item.status == 'future')
-  .map((item) => {
-    return ((new Date(item.end_at) - new Date(item.start_at))/1000)/60;
-  })[0];
+    .filter((item) => item.status == 'future')
+    .map((item) => {
+      return ((new Date(item.end_at) - new Date(item.start_at)) / 1000) / 60;
+    })[0];
   console.log("end from items is", lastItemEndAt, "schedule.end is", schedule.end);
   let overTime = lastItemEndAt - schedule.end;
 
@@ -38,10 +41,40 @@ export default function EventDashboard({ supabaseClient, setItems, schedule: sch
   let fullTime = 0;
   let remainingTime = 0;
 
+  /*
+                draggable={item.status === 'future'}
+                onDragStart={(e) => handleDragStart(e, index)}
+                onDragOver={(e) => handleDragOver(e, index)}
+                onDragEnd={handleDragEnd}
+
+
+    const handleDragStart = (e, index) => {
+      setDraggedItem(items[index]);
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', index);
+    };
+
+    const handleDragOver = (e, index) => {
+      e.preventDefault();
+      const targetIndex = index;
+      const sourceIndex = items.indexOf(draggedItem);
+      if (sourceIndex !== targetIndex) {
+        const updatedList = [...items];
+        updatedList.splice(sourceIndex, 1);
+        updatedList.splice(targetIndex, 0, draggedItem);
+        setitems(updatedList);
+      }
+    };
+
+    const handleDragEnd = () => {
+      setDraggedItem(null);
+    };
+  */
+
   function diff_mins(dt1, dt2) {
     let msec = new Date(dt2) - new Date(dt1);
     let s = msec / 1000;
-    let mins = Math.round(s/60);
+    let mins = Math.round(s / 60);
     return mins;
   }
 
@@ -50,12 +83,12 @@ export default function EventDashboard({ supabaseClient, setItems, schedule: sch
     let index = parseInt(e.target.id.split('_')[2]);
     let item = items[index];
     let timestamp = new Date().toISOString();
-    let params =  { p_schedule_id: schedule.id, p_item_id: item.id, p_must_fit: mustFit };
+    let params = { p_schedule_id: schedule.id, p_item_id: item.id, p_must_fit: mustFit };
     console.log("calling handleStartClick on", params);
-    const { data,  error } = await supabaseClient.rpc('start_schedule',params);
+    const { data, error } = await supabaseClient.rpc('start_schedule', params);
     console.log("error?", error);
     console.log("data?", data);
-    if(!error) {
+    if (!error) {
       setItems(data);
     }
     // router.push(`/schedule/${id}`);
@@ -75,67 +108,44 @@ export default function EventDashboard({ supabaseClient, setItems, schedule: sch
       .order('start_at', { ascending: true });
     console.log("error?", new_items_error);
     console.log("data?", new_items);
-    if(!error) {
+    if (!error) {
       setItems(new_items);
     }
   }
   return (
     <>
       <OverTimeReport lastItemEndAt={lastItemEndAt} overTime={overTime} schedule={schedule} timeSlotLength={timeSlotLength} />
-      {user && user.id == schedule.user_id && (
-        <>
-          <input
-            type="checkbox"
-            checked={mustFit}
-            onChange={(event) => setMustFit(event.target.checked)}
-            id="mustFitCheckbox"
-          />
-          <label htmlFor="mustFitCheckbox">Must Fit</label>
-        </>
-      )}
       <ol className="item_list">
+        {user && user.id == schedule.user_id && (
+          <li>
+            <div className="w-10 mr-2 text-right mr-8">
+              <input
+                className="h-8"
+                type="checkbox"
+                checked={mustFit}
+                onChange={(event) => setMustFit(event.target.checked)}
+                id="mustFitCheckbox"
+              />
+            </div>
+            <label htmlFor="mustFitCheckbox">Must Fit</label>
+          </li>
+        )}
         {items.map((item, index) => {
           let className = item.status;
           return (
-            <li key={item.id} className={className} tabIndex="0">
-              <FormattedTime time={item.start_at} />
-              {' - '}
-              <FormattedTime time={item.end_at} />
-              {' '}
-              <span className="text-gray-400 pl-2 pr-2">-</span>
-              {diff_mins(item.start_at, item.end_at)} Mins
-              <span className="text-gray-400 pl-2 pr-2">-</span>
+            <li key={item.id} className={`${className}`} tabIndex="0"
 
-              {item.name}
-              {user && user.id == schedule.user_id && (() => {
-                switch (item.status) {
-                  case 'past':
-                    return null
-                  case 'current':
-                    if (currentIndex > -1)
-                      return (
-                        <button
-                          id={`stop_item_${index}`}
-                          className="bg-blue-400  ml-4 pl-1 pr-1 rounded text-white"
-                          onClick={handleStopClick}>
-                          stop
-                        </button>
-                      );
-                    return null;
-                  case 'future':
-                    if (currentIndex == -1) return (
-                      <button
-                        id={`start_item_${index}`}
-                        className="bg-blue-400  ml-4 pl-1 pr-1 rounded text-white"
-                        onClick={handleStartClick}>
-                        starten
-                      </button>
-                    );
-                    return null;
-                  default:
-                    return null
-                }
-              })()}
+            >
+              <div className="w-10 mr-2">
+                {(user && user.id == schedule.user_id) && (
+                  <StartStopButtons {...{ item, index, currentIndex, handleStopClick, handleStartClick }} />
+                )}
+                {' '}
+              </div>
+              <FormattedTime time={item.start_at} className="w-20 text-gray-600  mr-2" />
+              <FormattedTime time={item.end_at} className="w-20 text-gray-600  mr-2" />
+              <span className="w-20  text-right text-gray-600  mr-8" >{diff_mins(item.start_at, item.end_at)} Mins</span>
+              <span>{item.name}</span>
             </li>
           )
         }
