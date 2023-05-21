@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { useState } from "react";
+import { convertItems } from "../lib/data_normalizer";
 
 export default function ResetButton({supabaseClient, scheduleId, handleComplete, setItems }) {
   const [loading, setLoading] = useState(false);
@@ -31,24 +32,24 @@ export default function ResetButton({supabaseClient, scheduleId, handleComplete,
   async function handleFitClick() {
     setLoading(true);
     let params = { "p_schedule_id": scheduleId};
-    console.log("calling plan_to_fit", params);
     const { data, error } = await supabaseClient.rpc('plan_to_fit', params);
-    console.log("done calling, got", data, error);
-    if(!error) {
-      setLoading(false);
-      setItems(data);
+    if(error) {
+      console.log("error", error);
+    } else {
+      setItems(convertItems(data));
     }
+    setLoading(false);
   }
   async function handleOverrunClick() {
     setLoading(true);
     let params = { "p_schedule_id": scheduleId};
-    console.log("calling plan_to_fixed_length", params);
     const { data, error } = await supabaseClient.rpc('plan_to_fixed_length', params);
-    console.log("done calling, got", data, error);
-    if(!error) {
-      setLoading(false);
-      setItems(data);
+    if(error) {
+      console.log("error", error);
+    } else {
+      setItems(convertItems(data));
     }
+    setLoading(false);
   }
   return (
     <div>

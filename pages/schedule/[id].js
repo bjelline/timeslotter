@@ -1,6 +1,5 @@
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import FormattedTime from '../../components/FormattedTime';
 import FormattedRange from '../../components/FormattedRange';
 import EventDashboard from '../../components/EventDashboard';
 import AdminBar from '../../components/AdminBar';
@@ -8,6 +7,7 @@ import { useState, useEffect, useLayoutEffect } from 'react';
 import { useUser, useSupabaseClient } from '@supabase/auth-helpers-react'
 import { createServerSupabaseClient } from '@supabase/auth-helpers-nextjs';
 import AddItem from '../../components/AddItem';
+import { convertItems, convertSchedule } from '../../lib/data_normalizer';
 
 export async function getServerSideProps(context) {
   const { id } = context.query;
@@ -57,9 +57,9 @@ export default function ShowSchedule(props) {
   const [items, setItems] = useState([]);
 
   useEffect(() => {
-    console.log("another useEffect in ShowSchedule, copying props to state");
-    setSchedule(props.schedule);
-    setItems(props.items);
+    // console.log("useEffect in /schedule/[id].js = ShowSchedule, copying props to state, converting string to date");
+    setSchedule(convertSchedule(props.schedule));
+    setItems(convertItems(props.items));
   }, [props.schedule, props.items]);
 
 

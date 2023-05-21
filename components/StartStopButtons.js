@@ -3,7 +3,7 @@ import OverTimer from './OverTimer';
 import FormattedTime from './FormattedTime';
 
 
-export default function StartStopButtons({ item, currentIndex, index, handleStopClick, handleStartClick }) {
+export default function StartStopButtons({ item, currentIndex, firstFutureIndex, index, handleStopClick, handleStartClick }) {
   switch (item.status) {
     case 'past':
       return null
@@ -19,7 +19,7 @@ export default function StartStopButtons({ item, currentIndex, index, handleStop
         );
       return null;
     case 'future':
-      if (currentIndex == -1) return (
+      if (currentIndex == -1 && index == firstFutureIndex) return (
         <button
           id={`start_item_${index}`}
           className="bg-blue-400  ml-4 pl-1 pr-1 rounded text-white"

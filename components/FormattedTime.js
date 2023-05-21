@@ -1,18 +1,9 @@
 import React from 'react';
+import { fmtTime } from '../lib/data_normalizer';
 
-export default function FormattedTime( { time, className } ) {
-  const locale = 'de';
-
-  const options = {
-    hour: 'numeric',
-    minute: '2-digit'
-  };
-
-  let formattedTime = new Intl.DateTimeFormat(locale, options).format(new Date(time));
-  if(formattedTime.startsWith('0')) formattedTime = formattedTime.slice(1);
-
+export default function FormattedTime({ time, className }) {
   return (
-    <span className={`text-right font-mono ${className}`} >{formattedTime}</span>
+    <span className={`text-right font-mono ${className}`} >{fmtTime(time)}</span>
   )
 }
 
