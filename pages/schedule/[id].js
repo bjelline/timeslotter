@@ -37,8 +37,10 @@ export async function getServerSideProps(context) {
     items = [];
   }
   // console.log("serverside in ShowSchedule: schedule and ", items.length, " items for ", id);
-  console.log("first item end_at is", typeof items[0].end_at, " is ", items[0].end_at);
-
+  console.log("for schedule ${schedule} there are ${items?.length} items")
+  if (items?.length > 0) {
+    console.log("first item end_at is", typeof items[0].end_at, " is ", items[0].end_at);
+  }
 
   return {
     props: {
